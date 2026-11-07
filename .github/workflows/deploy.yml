@@ -1,4 +1,4 @@
-name: 发布学而记
+name: 发布学习笔记
 
 on:
   push:

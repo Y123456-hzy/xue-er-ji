@@ -30,7 +30,7 @@ export default {
     recentPosts: "最近记录",
     allPosts: "全部文章",
   },
-  footer: { copyright: "", allRightsReserved: "学而记" },
+  footer: { copyright: "", allRightsReserved: "学习笔记" },
   pages: {
     tagTitle: "标签",
     tagDesc: "收录在这个标签下的笔记：",

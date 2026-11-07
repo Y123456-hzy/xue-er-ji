@@ -3,7 +3,7 @@ import { defineAstroPaperConfig } from "./src/types/config";
 export default defineAstroPaperConfig({
   site: {
     url: "https://y123456-hzy.github.io/xue-er-ji/",
-    title: "学而记",
+    title: "学习笔记",
     description: "学习笔记和备忘。",
     author: "Y123456-hzy",
     profile: "https://github.com/Y123456-hzy",
@@ -29,7 +29,7 @@ export default defineAstroPaperConfig({
     {
       name: "github",
       url: "https://github.com/Y123456-hzy/xue-er-ji",
-      linkTitle: "查看学而记的 GitHub 仓库",
+      linkTitle: "查看学习笔记的 GitHub 仓库",
     },
   ],
   shareLinks: [],

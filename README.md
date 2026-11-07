@@ -1,4 +1,4 @@
-# 学而记
+# 学习笔记
 
 暖白底、墨绿色的中文个人学习博客。文章用 Markdown 保存，通过 GitHub Actions 自动发布到 GitHub Pages。
 

@@ -1,0 +1,227 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { getAssetPath } from "@/utils/withBase";
+import config from "@/config";
+
+interface Props {
+  posts: CollectionEntry<"posts">[];
+  title?: string;
+  morePosts?: boolean;
+}
+
+const { posts, title, morePosts } = Astro.props;
+const locale = Astro.currentLocale ?? config.site.lang;
+const dateFormat = new Intl.DateTimeFormat("sv-SE", {
+  timeZone: config.site.timezone,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+const groups = new Map<
+  string,
+  { post: CollectionEntry<"posts">; date: string }[]
+>();
+for (const post of posts) {
+  const date = dateFormat.format(post.data.pubDatetime);
+  const year = date.slice(0, 4);
+  if (!groups.has(year)) groups.set(year, []);
+  groups.get(year)!.push({ post, date });
+}
+---
+
+<Layout {title}>
+  <div class="index-page">
+    <img
+      class="ink-branches"
+      src={getAssetPath("ink-branches.svg")}
+      alt=""
+      aria-hidden="true"
+      width="1440"
+      height="820"
+    />
+    <Header />
+    <main
+      id="main-content"
+      data-return-path={Astro.url.pathname}
+      class="post-index"
+    >
+      <div class="section-links">
+        <h1>文章</h1>
+        <a href={getRelativeLocaleUrl(locale, "tags")}>标签</a>
+        {
+          config.features.showArchives && (
+            <a href={getRelativeLocaleUrl(locale, "archives")}>归档</a>
+          )
+        }
+      </div>
+      <div class="years">
+        {
+          Array.from(groups, ([year, entries]) => (
+            <section class="year-group" aria-labelledby={`year-${year}`}>
+              <h2 id={`year-${year}`} class="year-mark">
+                {year}
+              </h2>
+              <ul>
+                {entries.map(({ post, date }) => (
+                  <li>
+                    <a
+                      class="post-link"
+                      href={getPostUrl(post.id, post.filePath, locale)}
+                    >
+                      <span>{post.data.title}</span>
+                      <time
+                        datetime={post.data.pubDatetime.toISOString()}
+                        title={date}
+                      >
+                        {Number(date.slice(5, 7))}月{Number(date.slice(8, 10))}
+                        日
+                      </time>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+        {groups.size === 0 && <p class="text-muted-foreground">还没有文章。</p>}
+      </div>
+      {
+        morePosts && (
+          <a class="more-posts" href={getRelativeLocaleUrl(locale, "posts")}>
+            全部文章
+          </a>
+        )
+      }
+      <slot />
+    </main>
+    <Footer noMarginTop class="post-index-footer" />
+  </div>
+</Layout>
+
+<style>
+  .index-page {
+    position: relative;
+    isolation: isolate;
+    min-height: 100svh;
+  }
+  .ink-branches {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: -1;
+    width: 100%;
+    height: min(100svh, 52rem);
+    object-fit: cover;
+    object-position: center top;
+    opacity: 0.27;
+    pointer-events: none;
+  }
+  :global([data-theme="dark"]) .ink-branches {
+    opacity: 0.16;
+  }
+  .post-index {
+    width: min(100%, 44.5rem);
+    margin-inline: auto;
+    padding: 3.25rem 1.75rem 3rem;
+  }
+  .section-links {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.15rem;
+    font-size: clamp(1.55rem, 3.4vw, 2rem);
+    line-height: 1.2;
+  }
+  h1 {
+    font-weight: 550;
+  }
+  .section-links a {
+    color: var(--muted-foreground);
+  }
+  .section-links a:hover {
+    color: var(--accent);
+  }
+  .years {
+    margin-top: 3.6rem;
+  }
+  .year-group {
+    position: relative;
+    isolation: isolate;
+    padding-top: 3.15rem;
+  }
+  .year-group + .year-group {
+    margin-top: 2.8rem;
+  }
+  .year-mark {
+    position: absolute;
+    z-index: -1;
+    top: -0.18em;
+    left: -0.34em;
+    margin: 0;
+    color: transparent;
+    -webkit-text-stroke: 1.4px
+      color-mix(in srgb, var(--foreground) 13%, transparent);
+    font: 700 clamp(6rem, 11vw, 8rem)/1 var(--font-app);
+    letter-spacing: -0.07em;
+    user-select: none;
+    pointer-events: none;
+  }
+  .post-link {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.1rem 0.65rem;
+    padding-block: 0.45rem;
+    font-size: 1.125rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+  .post-link:hover,
+  .more-posts:hover {
+    color: var(--accent);
+  }
+  time {
+    color: var(--muted-foreground);
+    font-size: 0.81rem;
+    white-space: nowrap;
+  }
+  .more-posts {
+    display: inline-block;
+    margin-top: 1.85rem;
+    color: var(--muted-foreground);
+    font-size: 0.9rem;
+  }
+  .post-index > :global(nav) {
+    margin-top: 2rem;
+  }
+  :global(.post-index-footer) {
+    max-width: 44.5rem;
+    padding-inline: 1.75rem;
+  }
+  @media (max-width: 639px) {
+    .ink-branches {
+      object-position: left top;
+    }
+    .post-index {
+      padding-top: 3.15rem;
+    }
+    .year-mark {
+      left: -0.27em;
+    }
+    .post-link {
+      gap: 0.2rem 0.55rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const main = document.querySelector<HTMLElement>("#main-content");
+    if (main?.dataset.returnPath)
+      sessionStorage.setItem("backUrl", main.dataset.returnPath);
+  });
+</script>
