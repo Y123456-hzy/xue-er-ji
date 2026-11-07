@@ -9,7 +9,9 @@ import { getPostUrl } from "@/utils/getPostPaths";
 import config from "@/config";
 
 const locale = Astro.currentLocale ?? config.site.lang;
-const posts = getSortedPosts(await getCollection("posts"));
+const posts = getSortedPosts(await getCollection("posts")).sort(
+  (a, b) => b.data.pubDatetime.getTime() - a.data.pubDatetime.getTime()
+);
 const homePath = getRelativeLocaleUrl(locale, "");
 const dateFormat = new Intl.DateTimeFormat("sv-SE", {
   timeZone: config.site.timezone,
