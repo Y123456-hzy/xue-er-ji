@@ -4,7 +4,7 @@ export default defineAstroPaperConfig({
   site: {
     url: "https://y123456-hzy.github.io/xue-er-ji/",
     title: "学而记",
-    description: "把学到的，慢慢变成自己的。记录学习笔记、实践过程与日常思考。",
+    description: "学习笔记和备忘。",
     author: "Y123456-hzy",
     profile: "https://github.com/Y123456-hzy",
     ogImage: "social-card.png",

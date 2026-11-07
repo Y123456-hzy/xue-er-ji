@@ -63,19 +63,6 @@ h3 {
 .app-prose > p {
   margin-block: 1.4em;
 }
-.brand-mark {
-  display: inline-grid;
-  place-items: center;
-  width: 1.9rem;
-  height: 1.9rem;
-  margin-inline-end: 0.65rem;
-  border: 1px solid var(--accent);
-  border-radius: 0.4rem;
-  color: var(--accent);
-  font-family: "Songti SC", "Noto Serif CJK SC", serif;
-  font-size: 1rem;
-  vertical-align: middle;
-}
 .post-card {
   padding-block: 1.65rem;
   border-bottom: 1px solid var(--border);
