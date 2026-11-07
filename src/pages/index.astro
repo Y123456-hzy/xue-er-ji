@@ -1,0 +1,163 @@
+---
+import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import IconRss from "@/assets/icons/IconRss.svg";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Card from "@/components/Card.astro";
+import LinkButton from "@/components/LinkButton.astro";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { getAssetPath } from "@/utils/withBase";
+import config from "@/config";
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const posts = getSortedPosts(await getCollection("posts"));
+const homePath = getRelativeLocaleUrl(locale, "");
+---
+
+<Layout>
+  <Header />
+  <main
+    id="main-content"
+    data-layout="index"
+    data-home-path={homePath}
+    class="app-layout"
+  >
+    <section id="hero" aria-labelledby="hero-heading">
+      <p class="eyebrow"><span></span> 学习 · 记录 · 回看</p>
+      <h1 id="hero-heading">
+        把学到的，<br />慢慢变成<span class="hero-emphasis">自己的。</span>
+      </h1>
+      <p class="hero-description">
+        给新学会的东西留一个位置。<br
+          class="sm:hidden"
+        />记下理解、实践，也记下还没想明白的问题。
+      </p>
+      <div class="hero-bottom">
+        <p>一篇一篇，慢慢积累。</p>
+        <a href={getAssetPath("rss.xml")} aria-label="订阅 RSS" title="订阅 RSS"
+          ><IconRss width={18} height={18} /> <span>RSS 订阅</span></a
+        >
+      </div>
+    </section>
+    <section
+      id="recent-posts"
+      class="pt-10 pb-4"
+      aria-labelledby="notes-heading"
+    >
+      <div class="section-heading">
+        <h2 id="notes-heading">最近记录</h2><span
+          >{String(posts.length).padStart(2, "0")} 篇笔记</span>
+      </div>
+      <ul>
+        {
+          posts
+            .slice(0, config.posts.perIndex)
+            .map(post => <Card variant="h3" {...post} />)
+        }
+      </ul>
+      {
+        posts.length === 0 && (
+          <p class="text-muted-foreground py-10">
+            这里还很安静，第一篇笔记即将开始。
+          </p>
+        )
+      }
+    </section>
+    <div class="mt-4 mb-14">
+      <LinkButton
+        href={getRelativeLocaleUrl(locale, "posts")}
+        class="text-accent text-sm"
+        >查看全部文章<IconArrowRight class="ms-2 inline-block" /></LinkButton
+      >
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  #hero {
+    padding-top: 4.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--accent);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+  }
+  .eyebrow span {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  h1 {
+    margin-block: 1.5rem;
+    font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+    font-weight: 600;
+    font-size: clamp(2rem, 5.4vw, 3.25rem);
+    letter-spacing: 0.035em;
+    line-height: 1.5;
+  }
+  .hero-emphasis {
+    color: var(--accent);
+  }
+  .hero-description {
+    font-size: 0.98rem;
+    color: var(--muted-foreground);
+    max-width: 35rem;
+    line-height: 1.95;
+  }
+  .hero-bottom {
+    margin-top: 3.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    color: var(--muted-foreground);
+    font-size: 0.76rem;
+  }
+  .hero-bottom a {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .hero-bottom a:hover {
+    color: var(--accent);
+  }
+  .section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .section-heading h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .section-heading > span {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+  @media (max-width: 639px) {
+    #hero {
+      padding-top: 2.75rem;
+    }
+    .hero-bottom {
+      margin-top: 2.5rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const main = document.querySelector<HTMLElement>("#main-content");
+    if (main?.dataset.homePath)
+      sessionStorage.setItem("backUrl", main.dataset.homePath);
+  });
+</script>

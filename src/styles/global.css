@@ -1,0 +1,103 @@
+@import "tailwindcss";
+@import "./theme.css";
+@import "./typography.css";
+@import "rehype-callouts/theme/obsidian";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@layer base {
+  * {
+    @apply border-border outline-accent/75;
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-muted) transparent;
+  }
+  a,
+  button,
+  #main-content {
+    @apply outline-accent outline-offset-1 focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility max-w-app {
+  max-width: 52rem;
+}
+
+@utility app-layout {
+  @apply max-w-app mx-auto w-full px-6;
+}
+
+@utility active-nav {
+  @apply text-accent underline decoration-2 underline-offset-8;
+}
+
+:target {
+  scroll-margin-block: 1rem;
+}
+
+body {
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+.app-prose {
+  line-height: 1.95;
+}
+.app-prose h3 {
+  font-style: normal;
+}
+.app-prose pre,
+.app-prose code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+.app-prose pre {
+  line-height: 1.7;
+}
+.app-prose > p {
+  margin-block: 1.4em;
+}
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  margin-inline-end: 0.65rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.4rem;
+  color: var(--accent);
+  font-family: "Songti SC", "Noto Serif CJK SC", serif;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+.post-card {
+  padding-block: 1.65rem;
+  border-bottom: 1px solid var(--border);
+}
+.post-card:last-child {
+  border-bottom: 0;
+}
+.post-card h2,
+.post-card h3 {
+  color: var(--foreground);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.post-card a:hover h2,
+.post-card a:hover h3 {
+  color: var(--accent);
+}
+.post-card p {
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+  margin-top: 0.45rem;
+}
+.post-card .post-date {
+  margin-top: 0.55rem;
+}
